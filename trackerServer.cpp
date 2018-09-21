@@ -80,6 +80,41 @@ string searchHash(string fromClient,string seederFile){
     return "";
 }
 
+void removeFromSeederList(string fromClient,string seederFile){
+    
+    cout<<fromClient<<"\n";
+    cout<<"inside remove\n";
+    bool present = searchFileHash(fromClient,seederFile);
+    if(!present)
+        return;
+
+    char file[seederFile.length()+1];
+    strcpy(file,(char *)seederFile.c_str());
+
+    string line;
+
+    ifstream fin;
+    fin.open(file);
+    ofstream temp;
+    temp.open("temp.txt");
+    
+    while (getline(fin,line))
+    {
+        cout<<line<<"\n";
+
+        if(line==fromClient)
+            line = "";
+        temp << line << endl;
+
+    }
+
+    temp.close();
+    fin.close();
+    remove(file);
+    rename("temp.txt",file);
+}
+
+
 int main(int argc, char *argv[]){
 
     string seperator = ":";
@@ -171,6 +206,8 @@ int main(int argc, char *argv[]){
             clientAddress = searchHash(fromClient,seederFile);    
         }else if(temp.compare("share")==0){
             updateSeederList(fromClient,seederFile);
+        }else if(temp.compare("remove")==0){
+            removeFromSeederList(fromClient,seederFile);
         }
         
 
